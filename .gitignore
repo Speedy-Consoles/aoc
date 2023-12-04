@@ -1,0 +1,23 @@
+# personal
+*_input*.txt
+*notes.txt
+tmp.txt
+
+# binaries
+bin
+23b
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Python
+*.pyc
+__pycache__
+
+# Intellij
+.idea
+
+# dependencies
+qm.py
