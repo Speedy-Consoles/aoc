@@ -50,16 +50,16 @@ def is_symbol(c):
 def in_range(p, start, end):
 	return p.x >= start.x and p.y >= start.y and p.x < end.x and p.y < end.y
 
-def neighbors(p, schematics):
+def get_neighbors(p, schematics):
 	width = len(schematics[0])
 	height = len(schematics)
 	for v in DIRS:
 		np = p + v
-		if in_range(p + v, Vec(0, 0), Vec(width, height)):
+		if in_range(np, Vec(0, 0), Vec(width, height)):
 			yield np
 
 def touches_symbol(p, schematics):
-	return any(is_symbol(get_character(np, schematics)) for np in neighbors(p, schematics))
+	return any(is_symbol(get_character(np, schematics)) for np in get_neighbors(p, schematics))
 
 def handle_number():
 	global digit_buffer, number_sum, number_active

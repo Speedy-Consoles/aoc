@@ -51,7 +51,7 @@ def is_gear(p, schematics):
 def in_range(p, start, end):
 	return p.x >= start.x and p.y >= start.y and p.x < end.x and p.y < end.y
 
-def neighbors(p, schematics):
+def get_neighbors(p, schematics):
 	width = len(schematics[0])
 	height = len(schematics)
 	for v in DIRS:
@@ -60,7 +60,7 @@ def neighbors(p, schematics):
 			yield np
 
 def get_gear_positions(p, schematics):
-	return filter(lambda p: is_gear(p, schematics), neighbors(p, schematics))
+	return filter(lambda p: is_gear(p, schematics), get_neighbors(p, schematics))
 
 def handle_number():
 	global gears, digit_buffer, gear_positions
