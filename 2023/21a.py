@@ -33,14 +33,14 @@ class Vec(object):
 	def __repr__(self):
 		return 'Vec({}, {})'.format(self.x, self.y)
 
-def get_num_reachable(garden, start, num_steps):
-	DIRECTIONS = [
-		Vec( 1,  0),
-		Vec( 0,  1),
-		Vec(-1,  0),
-		Vec( 0, -1),
-	]
+DIRECTIONS = [
+	Vec( 1,  0),
+	Vec( 0,  1),
+	Vec(-1,  0),
+	Vec( 0, -1),
+]
 
+def get_num_reachable(garden, start, num_steps):
 	width = len(garden[0])
 	height = len(garden)
 
