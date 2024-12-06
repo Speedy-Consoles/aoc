@@ -4,17 +4,23 @@
 tmp.txt
 
 # binaries
-bin
-23b
+/2020/23b
+
+# Java
+/*/bin
+
+# Python
+*.pyc
+__pycache__
+
+# Rust
+Cargo.lock
+target/
 
 # Eclipse
 .classpath
 .project
 .settings
-
-# Python
-*.pyc
-__pycache__
 
 # Intellij
 .idea
