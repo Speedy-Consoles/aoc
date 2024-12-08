@@ -7,6 +7,8 @@ use std::ops::{
     IndexMut,
     Mul,
     MulAssign,
+    Div,
+    DivAssign,
 };
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -98,5 +100,20 @@ impl<T: Copy + MulAssign, const N: usize> MulAssign<T> for Vector<T, N> {
     fn mul_assign(&mut self, rhs: T) {
         self[0] *= rhs;
         self[1] *= rhs;
+    }
+}
+
+impl<T: Copy + Div<U>, const N: usize, U: Copy> Div<U> for Vector<T, N> {
+    type Output = Vector<<T as Div<U>>::Output, N>;
+
+    fn div(self, rhs: U) -> Self::Output {
+        Vector(self.0.map(|v| v / rhs))
+    }
+}
+
+impl<T: Copy + DivAssign, const N: usize> DivAssign<T> for Vector<T, N> {
+    fn div_assign(&mut self, rhs: T) {
+        self[0] /= rhs;
+        self[1] /= rhs;
     }
 }
