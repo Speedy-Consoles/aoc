@@ -1,6 +1,9 @@
-use std::ops::{
-    Index,
-    IndexMut,
+use std::{
+    io,
+    ops::{
+        Index,
+        IndexMut,
+    }
 };
 
 type Vector =  crate::vector::Vector<i32, 2>;
@@ -8,6 +11,7 @@ type Vector =  crate::vector::Vector<i32, 2>;
 pub struct Grid<T> {
     cells: Vec<T>,
     width: usize,
+    height: usize,
 }
 
 impl<T> Grid<T> {
@@ -16,7 +20,7 @@ impl<T> Grid<T> {
     }
 
     pub fn height(&self) -> usize {
-        self.cells.len() / self.width
+        self.height
     }
 
     pub fn iter(&self) -> impl Iterator<Item=&T> {
@@ -31,8 +35,8 @@ impl<T> Grid<T> {
     }
 
     pub fn indices(&self) -> impl Iterator<Item=Vector> {
-        let width = self.width();
-        let height = self.height();
+        let width = self.width;
+        let height = self.height;
         (0..height).flat_map(move |y|
             (0..width).map(move |x| Vector::new(x as i32, y as i32)
         ))
@@ -44,10 +48,22 @@ impl<T> Grid<T> {
 }
 
 impl Grid<char> {
-    pub fn from_lines(string: &str) -> Self {
-        Grid {
-            cells: string.split('\n').flat_map(|s| s.chars()).collect::<Vec<_>>(),
-            width: string.find('\n').unwrap(),
+    pub fn from_stdin() -> Self {
+        let mut lines = io::stdin().lines().map(Result::unwrap).peekable();
+        let width = lines.peek().unwrap().len();
+        let mut height = 0;
+        let mut cells = Vec::new();
+        for line in lines {
+            for (x, c) in line.chars().enumerate() {
+                assert!(x < width);
+                cells.push(c);
+            }
+            height += 1;
+        }
+        Self {
+            cells,
+            width,
+            height,
         }
     }
 }

@@ -1,10 +1,4 @@
-use std::{
-    io::{
-        self,
-        Read,
-    },
-    collections::HashSet,
-};
+use std::collections::HashSet;
 
 type Grid = crate::grid::Grid<char>;
 type Vector = crate::vector::Vector<i32, 2>;
@@ -17,11 +11,7 @@ pub const DIRECTIONS: [Vector; 4] = [
 ];
 
 pub fn parse_input() -> (Grid, Vector, usize) {
-    let mut grid = {
-        let mut s = String::new();
-        io::stdin().read_to_string(&mut s).unwrap();
-        Grid::from_lines(&s)
-    };
+    let mut grid = Grid::from_stdin();
 
     let position = grid.indexed_iter().find(|(_, &c)| c == '^').unwrap().0;
     let direction_index = 3;

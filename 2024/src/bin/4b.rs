@@ -1,8 +1,3 @@
-use std::io::{
-    self,
-    Read,
-};
-
 type Vector = lib::vector::Vector<i32, 2>;
 type Grid = lib::grid::Grid<char>;
 
@@ -17,11 +12,7 @@ const OFFSETS: [[Vector; 2]; 2] = [
 ];
 
 fn main() {
-    let grid = {
-        let mut s = String::new();
-        io::stdin().read_to_string(&mut s).unwrap();
-        Grid::from_lines(&s)
-    };
+    let grid = Grid::from_stdin();
 
     let grid = &grid;
     let result = (1..grid.width() - 1).flat_map(|x|
