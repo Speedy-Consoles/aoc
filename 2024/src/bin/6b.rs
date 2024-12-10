@@ -2,6 +2,8 @@ use std::collections::HashSet;
 
 use lib::six::*;
 
+type Vector = lib::vector::Vector<i32, 2>;
+
 fn main() {
     let (grid, start_position, start_direction_index) = parse_input();
 
@@ -11,7 +13,7 @@ fn main() {
             let mut direction_index = start_direction_index;
             let mut touched = HashSet::from([(position, direction_index)]);
             loop {
-                let next_position = position + DIRECTIONS[direction_index];
+                let next_position = position + Vector::DIRECTIONS_4[direction_index];
                 if !grid.in_bounds(&next_position) {
                     break false;
                 } else if grid[next_position] == '.' && next_position != obstacle {

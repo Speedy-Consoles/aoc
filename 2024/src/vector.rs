@@ -32,6 +32,37 @@ impl<T> Vector<T, 3> {
     }
 }
 
+impl Vector<i32, 2> {
+    pub const DIRECTIONS_4: [Self; 4] = [
+        Self::new( 1,  0),
+        Self::new( 0,  1),
+        Self::new(-1,  0),
+        Self::new( 0, -1),
+    ];
+
+    pub const DIRECTIONS_8: [Self; 8] = [
+        Self::new( 1,  0),
+        Self::new( 1,  1),
+        Self::new( 0,  1),
+        Self::new(-1,  1),
+        Self::new(-1,  0),
+        Self::new(-1, -1),
+        Self::new( 0, -1),
+        Self::new( 1, -1),
+    ];
+}
+
+impl Vector<i32, 3> {
+    pub const DIRECTIONS_6: [Self; 6] = [
+        Self::new( 1,  0,  0),
+        Self::new( 0,  1,  0),
+        Self::new( 0,  0,  1),
+        Self::new(-1,  0,  0),
+        Self::new( 0, -1,  0),
+        Self::new( 0,  0, -1),
+    ];
+}
+
 impl<T, const N: usize> Index<usize> for Vector<T, N> {
     type Output = T;
 
