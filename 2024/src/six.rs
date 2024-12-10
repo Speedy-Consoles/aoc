@@ -11,7 +11,7 @@ pub const DIRECTIONS: [Vector; 4] = [
 ];
 
 pub fn parse_input() -> (Grid, Vector, usize) {
-    let mut grid = Grid::from_stdin();
+    let mut grid = Grid::from_stdin().unwrap();
 
     let position = grid.indexed_iter().find(|(_, &c)| c == '^').unwrap().0;
     let direction_index = 3;

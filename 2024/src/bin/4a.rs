@@ -15,7 +15,7 @@ const DIRECTIONS: [Vector; 8] = [
 const WORD: [char; 4] = ['X', 'M', 'A', 'S'];
 
 fn main() {
-    let grid = Grid::from_stdin();
+    let grid = Grid::from_stdin().unwrap();
 
     let grid = &grid;
     let result = (0..grid.width()).flat_map(|x|

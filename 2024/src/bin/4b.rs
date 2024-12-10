@@ -12,7 +12,7 @@ const OFFSETS: [[Vector; 2]; 2] = [
 ];
 
 fn main() {
-    let grid = Grid::from_stdin();
+    let grid = Grid::from_stdin().unwrap();
 
     let grid = &grid;
     let result = (1..grid.width() - 1).flat_map(|x|
