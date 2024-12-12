@@ -1,14 +1,15 @@
 use std::ops::{
     Add,
     AddAssign,
-    Sub,
-    SubAssign,
+    Div,
+    DivAssign,
     Index,
     IndexMut,
     Mul,
     MulAssign,
-    Div,
-    DivAssign,
+    Neg,
+    Sub,
+    SubAssign,
 };
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -23,6 +24,19 @@ impl<T: Ord + Default, const N: usize> Vector<T, N> {
 impl<T> Vector<T, 2> {
     pub const fn new(x: T, y: T) -> Self {
         Vector([x, y])
+    }
+}
+
+impl<T> Vector<T, 2>
+where
+    T: Copy + Neg<Output = T>,
+{
+    pub fn rotated_ccw(&self) -> Self {
+        Vector([-self[1], self[0]])
+    }
+
+    pub fn rotated_cw(&self) -> Self {
+        Vector([self[1], -self[0]])
     }
 }
 
