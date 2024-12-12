@@ -28,6 +28,10 @@ impl<T> Grid<T> {
         self.height
     }
 
+    pub fn get(&self, position: &Vector) -> Option<&T> {
+        self.in_bounds(position).then(|| &self[*position])
+    }
+
     pub fn iter(&self) -> impl Iterator<Item=&T> {
         self.cells.iter()
     }
