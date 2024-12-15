@@ -6,12 +6,49 @@ use std::{
     },
     io,
     ops::{
+        Deref,
         Index,
         IndexMut,
     },
 };
 
-type Vector =  crate::vector::Vector<i32, 2>;
+type Vector = crate::vector::Vector<i32, 2>;
+
+#[derive(Debug)]
+pub struct ParseU8Error(char);
+
+impl Display for ParseU8Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} is not a digit", self.0)
+    }
+}
+
+pub trait TryFromChar: Sized {
+    type Error;
+
+    // Required method
+    fn try_from_char(value: char) -> Result<Self, Self::Error>;
+}
+
+impl TryFromChar for char {
+    type Error = ();
+
+    fn try_from_char(value: char) -> Result<Self, Self::Error> {
+        Ok(value)
+    }
+}
+
+impl TryFromChar for u8 {
+    type Error = ParseU8Error;
+
+    fn try_from_char(value: char) -> Result<Self, Self::Error> {
+        if !value.is_numeric() {
+            Err(ParseU8Error(value))
+        } else {
+            Ok(value as u8 - '0' as u8)
+        }
+    }
+}
 
 pub struct Grid<T> {
     cells: Vec<T>,
@@ -83,63 +120,93 @@ impl<E: Display + Debug> Display for ParseGridError<E> {
     }
 }
 
-#[derive(Debug)]
-pub struct ParseU8Error(char);
-
-impl Display for ParseU8Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} is not a digit", self.0)
-    }
-}
-
-fn from_stdin<T, F, E: Debug>(f: F) -> Result<Grid<T>, ParseGridError<E>>
+impl<T> Grid<T>
 where
-    F: Fn(char) -> Result<T, E>,
+    T: TryFromChar,
+    <T as TryFromChar>::Error: Debug,
 {
-    let mut lines = io::stdin().lines().map(Result::unwrap).peekable();
-    let width = lines.peek().unwrap().len();
-    let mut height = 0;
-    let mut cells = Vec::new();
-    for line in lines {
-        for (x, c) in line.chars().enumerate() {
-            if x >= width {
-                return Err(ParseGridError::LineLengthsInconsistent {
-                    line_index: height,
-                    expected_line_len: width,
-                });
-            };
-            let element = f(c)
-                .map_err(|e| ParseGridError::ParseElementError{
-                    line_index: height,
-                    column_index: x,
-                    error: e
-                })?;
-            cells.push(element);
-        }
-        height += 1;
-    }
-    Ok(Grid {
-        cells,
-        width,
-        height,
-    })
-}
-
-impl Grid<u8> {
-    pub fn from_stdin() -> Result<Self, ParseGridError<ParseU8Error>> {
-        from_stdin(|c| {
-            if !c.is_numeric() {
-                Err(ParseU8Error(c))
-            } else {
-                Ok(c as u8 - '0' as u8)
+    pub fn from_line_iterators<L, I>(lines: L) -> Result<Grid<T>, ParseGridError<<T as TryFromChar>::Error>>
+    where
+        L: Iterator<Item=I>,
+        I: Iterator<Item=char>,
+    {
+        let mut width = None;
+        let mut height = 0;
+        let mut cells = Vec::new();
+        for line in lines {
+            let mut local_width = 0;
+            for (x, c) in line.enumerate() {
+                if let Some(width) = width {
+                    if x >= width {
+                        return Err(ParseGridError::LineLengthsInconsistent {
+                            line_index: height,
+                            expected_line_len: width,
+                        });
+                    }
+                };
+                let element = TryFromChar::try_from_char(c)
+                    .map_err(|e| ParseGridError::ParseElementError{
+                        line_index: height,
+                        column_index: x,
+                        error: e
+                    })?;
+                cells.push(element);
+                local_width += 1;
             }
+            width = Some(local_width);
+            height += 1;
+        }
+        Ok(Grid {
+            cells,
+            width: width.unwrap(),
+            height,
         })
     }
+
+    pub fn from_lines<L, I>(lines: L) -> Result<Grid<T>, ParseGridError<<T as TryFromChar>::Error>>
+    where
+        L: Iterator<Item=I>,
+        I: Deref<Target=str>,
+    {
+        Self::from_line_iterators(lines.map(|line|
+            // collecting into Vec is not nice, but there isn't really a nice way to return
+            // an iterator that owns the line string (https://stackoverflow.com/a/43958470)
+            line.chars().collect::<Vec<_>>().into_iter()
+        ))
+    }
+    
+    pub fn from_stdin() -> Result<Self, ParseGridError<<T as TryFromChar>::Error>> {
+        Self::from_lines(io::stdin().lines().map(Result::unwrap))
+    }
 }
 
-impl Grid<char> {
-    pub fn from_stdin() -> Result<Self, ParseGridError<()>> {
-        from_stdin(|c| Ok(c))
+impl<T> Debug for Grid<T>
+where
+    T: Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                write!(f, "{:?}", self.cells[y * self.width + x])?;
+            }
+            write!(f, "\n")?;
+        }
+        Ok(())
+    }
+}
+
+impl<T> Display for Grid<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                write!(f, "{}", self.cells[y * self.width + x])?;
+            }
+            write!(f, "\n")?;
+        }
+        Ok(())
     }
 }
 
