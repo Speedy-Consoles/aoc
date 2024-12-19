@@ -12,6 +12,14 @@ pub struct BoundedSparseGrid<T> {
 }
 
 impl<T> BoundedSparseGrid<T> {
+    pub fn new(width: usize, height: usize) -> Self {
+        Self {
+            elements: HashMap::new(),
+            width,
+            height,
+        }
+    }
+
     pub fn width(&self) -> usize {
         self.width
     }
@@ -20,12 +28,16 @@ impl<T> BoundedSparseGrid<T> {
         self.height
     }
 
-    pub fn get(&self, index: Vector) -> Option<&T> {
-        self.elements.get(&index)
+    pub fn insert(&mut self, index: Vector, value: T) -> Option<T> {
+        self.elements.insert(index, value)
     }
 
-    pub fn get_mut(&mut self, index: Vector) -> Option<&mut T> {
-        self.elements.get_mut(&index)
+    pub fn get(&self, index: &Vector) -> Option<&T> {
+        self.elements.get(index)
+    }
+
+    pub fn get_mut(&mut self, index: &Vector) -> Option<&mut T> {
+        self.elements.get_mut(index)
     }
 
     pub fn indexed_iter(&self) -> impl Iterator<Item=(&Vector, &T)> {
