@@ -76,7 +76,7 @@ fn add_node(
 pub fn compute_parents() -> (HashMap<Node, (usize, Vec<Node>)>, Node) {
     let grid = Grid::from_stdin().unwrap();
 
-    let start = grid.indexed_iter().find_map(|(p, &c)| (c == 'S').then_some(p)).unwrap();
+    let start = grid.find(&'S').unwrap();
 
     let start_node = Node { position: start, direction_index: 0 };
     let mut finish_node = None;

@@ -93,6 +93,15 @@ impl<T> Grid<T> {
     }
 }
 
+impl<T> Grid<T>
+where
+    T: Eq,
+{
+    pub fn find(&self, value: &T) -> Option<Vector> {
+        self.indexed_iter().find_map(|(k, v)| (v == value).then_some(k))
+    }
+}
+
 #[derive(Debug)]
 pub enum ParseGridError<E: Debug> {
     LineLengthsInconsistent {
