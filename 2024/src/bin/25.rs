@@ -10,14 +10,10 @@ where
     lines_iter
         .enumerate()
         .fold([0; 5], |mut shape, (l, line)| {
-            let chars: [char; 5] = line.chars()
-                .collect::<Vec<_>>()
-                .try_into()
-                .unwrap();
-            for i in 0..5 {
-                if chars[i] == '#' {
-                    assert_eq!(shape[i], l);
-                    shape[i] += 1;
+            for (c, length) in line.chars().zip(shape.iter_mut()) {
+                if c == '#' {
+                    assert_eq!(*length, l);
+                    *length += 1;
                 }
             }
             shape
