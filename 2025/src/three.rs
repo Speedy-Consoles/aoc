@@ -1,7 +1,7 @@
-use std::io;
+use std::io::BufRead;
 
-pub fn solve(length: usize) -> u64 {
-    io::stdin().lines().map(|line_result|
+fn solve(input: Box<dyn BufRead>, length: usize) -> u64 {
+    input.lines().map(|line_result|
         line_result
             .unwrap()
             .chars()
@@ -19,4 +19,14 @@ pub fn solve(length: usize) -> u64 {
             .map(|(i, &x)| 10u64.pow(i as u32) * x as u64)
             .sum::<u64>()
     ).sum()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    let solution = solve(input, 2);
+    format!("{solution}")
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    let solution = solve(input, 12);
+    format!("{solution}")
 }
