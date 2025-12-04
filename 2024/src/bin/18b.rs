@@ -1,6 +1,8 @@
 use lib::eighteen::*;
 
-type Grid = lib::bounded_sparse_grid::BoundedSparseGrid<char>;
+use aoc_tools;
+
+type Grid = aoc_tools::BoundedSparseGrid<char>;
 
 fn main() {
     let mut grid = Grid::new(71, 71);

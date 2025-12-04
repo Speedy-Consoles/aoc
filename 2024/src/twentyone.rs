@@ -8,7 +8,9 @@ use std::{
 
 use itertools::Itertools;
 
-type Vector = crate::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Vector = aoc_tools::Vector<i32, 2>;
 
 struct Keypad {
     index_button_positions: Vec<Vector>,

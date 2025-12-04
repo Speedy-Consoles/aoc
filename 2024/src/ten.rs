@@ -1,7 +1,9 @@
 use std::collections::HashSet;
 
-type Grid = crate::grid::Grid<u8>;
-type Vector = crate::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Grid = aoc_tools::Grid<u8>;
+type Vector = aoc_tools::Vector<i32, 2>;
 
 pub trait TrailAccumulator {
     fn new() -> Self;

@@ -1,7 +1,9 @@
 use std::collections::HashSet;
 
-type Grid = crate::grid::Grid<char>;
-type Vector = crate::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Grid = aoc_tools::Grid<char>;
+type Vector = aoc_tools::Vector<i32, 2>;
 
 pub fn solve<const COMBINE_STRAIGHTS: bool>() -> usize {
     let mut visited = HashSet::new();

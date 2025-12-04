@@ -2,7 +2,9 @@ use std::collections::HashSet;
 
 use lib::ten::*;
 
-type Vector = lib::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Vector = aoc_tools::Vector<i32, 2>;
 
 fn main() {
     let result = solve::<HashSet<Vector>>();

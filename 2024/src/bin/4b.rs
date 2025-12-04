@@ -1,5 +1,7 @@
-type Vector = lib::vector::Vector<i32, 2>;
-type Grid = lib::grid::Grid<char>;
+use aoc_tools;
+
+type Vector = aoc_tools::Vector<i32, 2>;
+type Grid = aoc_tools::Grid<char>;
 
 const OFFSETS: [[Vector; 2]; 2] = [
     [

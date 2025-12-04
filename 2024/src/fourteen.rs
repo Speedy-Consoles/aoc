@@ -2,7 +2,9 @@ use std::io;
 
 use regex::Regex;
 
-type Vector = crate::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Vector = aoc_tools::Vector<i32, 2>;
 
 pub const WIDTH: i32 = 101;
 pub const HEIGHT: i32 = 103;

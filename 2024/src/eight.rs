@@ -3,14 +3,16 @@ use std::collections::{
     HashSet,
 };
 
-type Vector = crate::vector::Vector<i32, 2>;
-type BoundedSparseGrid = crate::bounded_sparse_grid::BoundedSparseGrid<char>;
+use aoc_tools;
+
+type Grid = aoc_tools::BoundedSparseGrid<char>;
+type Vector = aoc_tools::Vector<i32, 2>;
 
 pub fn solve<I>(factors: I) -> usize
 where
     I: Iterator<Item=i32> + Clone,
 {
-    let grid = BoundedSparseGrid::from_stdin('.');
+    let grid = Grid::from_stdin('.');
 
     let mut antennas: HashMap<char, Vec<Vector>> = HashMap::new();
     let mut antinodes = HashSet::new();

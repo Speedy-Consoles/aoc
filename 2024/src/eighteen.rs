@@ -7,8 +7,10 @@ use std::{
     io,
 };
 
-type Grid = crate::bounded_sparse_grid::BoundedSparseGrid<char>;
-type Vector = crate::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Grid = aoc_tools::BoundedSparseGrid<char>;
+type Vector = aoc_tools::Vector<i32, 2>;
 
 pub fn parse_input() -> impl Iterator<Item=Vector> {
     io::stdin().lines().map(|line| {

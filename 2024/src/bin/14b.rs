@@ -2,7 +2,9 @@ use std::collections::HashSet;
 
 use lib::fourteen::*;
 
-type Vector = lib::vector::Vector<i32, 2>;
+use aoc_tools;
+
+type Vector = aoc_tools::Vector<i32, 2>;
 
 const EASTER_EGG: [&[u8; 31]; 33] = [
     b"###############################",
