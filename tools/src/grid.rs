@@ -80,7 +80,7 @@ impl<T> Grid<T> {
             .map(|(i, (x, y))| (Vector::new(x as i32, y as i32), &self.cells[i]))
     }
 
-    pub fn indices(&self) -> impl Iterator<Item=Vector> {
+    pub fn indices<'a, 'b>(&'a self) -> impl Iterator<Item=Vector> + 'b {
         let width = self.width;
         let height = self.height;
         (0..height).flat_map(move |y|

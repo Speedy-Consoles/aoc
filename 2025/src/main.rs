@@ -11,6 +11,7 @@ use std::{
 pub mod one;
 pub mod two;
 pub mod three;
+pub mod four;
 
 fn get_solvers() -> HashMap<String, fn(Box<dyn BufRead>) -> String> {
     [
@@ -20,6 +21,8 @@ fn get_solvers() -> HashMap<String, fn(Box<dyn BufRead>) -> String> {
         ("2b", two::part_2 as fn(Box<dyn BufRead>) -> String),
         ("3a", three::part_1 as fn(Box<dyn BufRead>) -> String),
         ("3b", three::part_2 as fn(Box<dyn BufRead>) -> String),
+        ("4a", four::part_1 as fn(Box<dyn BufRead>) -> String),
+        ("4b", four::part_2 as fn(Box<dyn BufRead>) -> String),
     ]
         .into_iter()
         .map(|(k, v)| (k.to_string(), v))
