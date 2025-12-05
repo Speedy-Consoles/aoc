@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 aoc_tools = { path = "../tools" }
+aoc_macros = { path = "../macros" }
 itertools = "0.14.0"
-
