@@ -55,7 +55,6 @@ mod tests {
     fn check_solutions() {
         let nominal_solutions = BufReader::new(File::open("solutions.txt").unwrap())
             .lines()
-            .inspect(|x| println!("{x:?}"))
             .map(|line| line.unwrap().split(' ').map(str::to_string).collect_tuple::<(_, _)>().unwrap())
             .collect::<HashMap<_,_>>();
         let solvers = crate::get_solvers();
