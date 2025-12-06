@@ -4,7 +4,12 @@ use std::{
         Debug,
         Display,
     },
-    io,
+    mem,
+    io::{
+        self,
+        BufRead,
+    },
+    iter,
     ops::{
         Deref,
         Index,
@@ -88,8 +93,34 @@ impl<T> Grid<T> {
         ))
     }
 
+    pub fn rows(&self) -> impl Iterator<Item=impl Iterator<Item=&T>> {
+        self.cells.chunks(self.width).map(|chunk| chunk.iter())
+    }
+
     pub fn in_bounds(&self, position: &Vector) -> bool {
         position.in_bounds(&Vector::new(self.width() as i32, self.height() as i32))
+    }
+
+    pub fn flip_vertically(&mut self) {
+        let mut iter = self.cells.chunks_exact_mut(self.width);
+        while let (Some(first), Some(second)) = (iter.next(), iter.next_back()) {
+            first.swap_with_slice(second);
+        }
+    }
+
+    pub fn flip_horizontally(&mut self) {
+        for row in self.cells.chunks_exact_mut(self.width) {
+            row.reverse()
+        }
+    }
+
+    pub fn transpose(&mut self) {
+        let mut new_cells = iter::repeat_with(|| None).take(self.width * self.height).collect::<Vec<_>>();
+        for (pos, value) in self.indices().zip(self.cells.drain(..)) {
+            new_cells[pos[0] as usize * self.height + pos[1] as usize] = Some(value);
+        }
+        mem::swap(&mut self.width, &mut self.height);
+        self.cells = new_cells.drain(..).map(Option::unwrap).collect();
     }
 }
 
@@ -183,7 +214,14 @@ where
             line.chars().collect::<Vec<_>>().into_iter()
         ))
     }
-    
+
+    pub fn from_buf_read<B>(buf_read: &mut B) -> Result<Self, ParseGridError<<T as TryFromChar>::Error>>
+    where
+        B: BufRead,
+    {
+        Self::from_lines(buf_read.lines().map(Result::unwrap))
+    }
+
     pub fn from_stdin() -> Result<Self, ParseGridError<<T as TryFromChar>::Error>> {
         Self::from_lines(io::stdin().lines().map(Result::unwrap))
     }
