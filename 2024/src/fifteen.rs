@@ -1,9 +1,6 @@
 use std::{
     collections::HashSet,
-    io::{
-        self,
-        Read,
-    },
+    io::BufRead,
 };
 
 use aoc_tools;
@@ -11,13 +8,13 @@ use aoc_tools;
 type Grid = aoc_tools::Grid<char>;
 type Vector = aoc_tools::Vector<i32, 2>;
 
-pub fn solve<F, I>(field_mapper: F) -> i32
+pub fn solve<F, I>(mut input: Box<dyn BufRead>, field_mapper: F) -> i32
 where
     F: Fn(char) -> I,
     I: Iterator<Item=char>,
 {
     let mut s = String::new();
-    io::stdin().read_to_string(&mut s).unwrap();
+    input.read_to_string(&mut s).unwrap();
     let [warehouse_string, program_string] = s.split("\n\n")
         .collect::<Vec<_>>()
         .try_into()
@@ -87,4 +84,21 @@ where
     grid.indexed_iter()
         .filter_map(|(pos, &object)| ['[', 'O'].contains(&object).then(|| pos[0] + pos[1] * 100))
         .sum()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, |c| [c].into_iter()))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    let result = solve(input, |c|
+        match c {
+            '#' => "##".chars(),
+            'O' => "[]".chars(),
+            '.' => "..".chars(),
+            '@' => "@.".chars(),
+            c => panic!("invalid object found: {}", c),
+        }
+    );
+    format!("{}", result)
 }

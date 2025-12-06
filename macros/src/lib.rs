@@ -28,7 +28,7 @@ fn day_id_to_module_name(day_id: u32) -> &'static str {
         15 => "fifteen",
         16 => "sixteen",
         17 => "seventeen",
-        18 => "eightteen",
+        18 => "eighteen",
         19 => "nineteen",
         20 => "twenty",
         21 => "twentyone",

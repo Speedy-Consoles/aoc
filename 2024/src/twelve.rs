@@ -1,13 +1,16 @@
-use std::collections::HashSet;
+use std::{
+    collections::HashSet,
+    io::BufRead,
+};
 
 use aoc_tools;
 
 type Grid = aoc_tools::Grid<char>;
 type Vector = aoc_tools::Vector<i32, 2>;
 
-pub fn solve<const COMBINE_STRAIGHTS: bool>() -> usize {
+pub fn solve<const COMBINE_STRAIGHTS: bool>(mut input: Box<dyn BufRead>) -> usize {
     let mut visited = HashSet::new();
-    let plots = Grid::from_stdin().unwrap();
+    let plots = Grid::from_buf_read(&mut input).unwrap();
     plots.indexed_iter().filter_map(|(start_pos, plant)| {
         if visited.contains(&start_pos) {
             return None
@@ -43,4 +46,12 @@ pub fn solve<const COMBINE_STRAIGHTS: bool>() -> usize {
 
         Some(area * perimeter)
     }).sum::<usize>()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve::<false>(input))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve::<true>(input))
 }

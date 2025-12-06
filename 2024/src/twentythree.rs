@@ -5,7 +5,7 @@ use std::{
         HashSet,
     },
     hash::Hash,
-    io,
+    io::BufRead,
 };
 
 fn find_cliques_recursively<'a, T, U>(
@@ -57,9 +57,9 @@ where
     result
 }
 
-pub fn get_network() -> HashMap<String, HashSet<String>> {
+pub fn get_network(input: Box<dyn BufRead>) -> HashMap<String, HashSet<String>> {
     let mut network = HashMap::new();
-    for line in io::stdin().lines().map(Result::unwrap) {
+    for line in input.lines().map(Result::unwrap) {
         let [a, b] = line
             .split('-')
             .collect::<Vec<_>>()
@@ -70,4 +70,25 @@ pub fn get_network() -> HashMap<String, HashSet<String>> {
     }
 
     network
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    let network = get_network(input);
+    let result = find_cliques::<_, str>(&network)
+        .iter()
+        .filter(|clique| clique.len() == 3 && clique.iter().find(|node| node.starts_with('t')).is_some())
+        .count();
+
+    format!("{result}")
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    let network = get_network(input);
+    let mut biggest_clique = find_cliques(&network)
+        .into_iter()
+        .max_by_key(|clique| clique.len())
+        .unwrap();
+    biggest_clique.sort();
+
+    format!("{}", biggest_clique.join(","))
 }

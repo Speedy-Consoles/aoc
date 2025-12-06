@@ -1,6 +1,9 @@
-use std::collections::{
-    hash_map::Entry,
-    HashMap,
+use std::{
+    collections::{
+        hash_map::Entry,
+        HashMap,
+    },
+    io::BufRead,
 };
 
 use aoc_tools;
@@ -8,8 +11,8 @@ use aoc_tools;
 type Grid = aoc_tools::Grid<char>;
 type Vector = aoc_tools::Vector<i32, 2>;
 
-pub fn solve(max_cheat_length: usize) -> usize {
-    let grid = Grid::from_stdin().unwrap();
+pub fn solve(mut input: Box<dyn BufRead>, max_cheat_length: usize) -> usize {
+    let grid = Grid::from_buf_read(&mut input).unwrap();
     let start = grid.find(&'S').unwrap();
     let finish = grid.find(&'E').unwrap();
 
@@ -50,4 +53,12 @@ pub fn solve(max_cheat_length: usize) -> usize {
             )
         })
         .count()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 2))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 20))
 }

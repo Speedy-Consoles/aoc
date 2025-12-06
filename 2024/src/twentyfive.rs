@@ -1,7 +1,4 @@
-use std::io::{
-    self,
-    Read,
-};
+use std::io::BufRead;
 
 fn get_shape<'a, I>(lines_iter: I) -> [usize; 5]
 where
@@ -20,9 +17,9 @@ where
         })
 }
 
-fn main() {
+pub fn part_1(mut input: Box<dyn BufRead>) -> String {
     let mut s = String::new();
-    io::stdin().read_to_string(&mut s).unwrap();
+    input.read_to_string(&mut s).unwrap();
     let mut locks = Vec::new();
     let mut keys = Vec::new();
     for section in s.split("\n\n") {
@@ -39,5 +36,5 @@ fn main() {
         keys.iter().filter(|key| lock.iter().zip(key.iter()).all(|(k, l)| k + l <= 5))
     ).count();
 
-    println!("{result}");
+    format!("{result}")
 }

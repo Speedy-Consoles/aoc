@@ -4,7 +4,7 @@ use std::{
         HashMap,
         VecDeque,
     },
-    io,
+    io::BufRead,
 };
 
 use aoc_tools;
@@ -12,8 +12,8 @@ use aoc_tools;
 type Grid = aoc_tools::BoundedSparseGrid<char>;
 type Vector = aoc_tools::Vector<i32, 2>;
 
-pub fn parse_input() -> impl Iterator<Item=Vector> {
-    io::stdin().lines().map(|line| {
+pub fn parse_input(input: Box<dyn BufRead>) -> impl Iterator<Item=Vector> {
+    input.lines().map(|line| {
         let [x, y] = line
             .unwrap()
             .split(',')
@@ -48,4 +48,24 @@ pub fn find_path(grid: &Grid) -> Option<usize> {
     }
 
     None
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    let mut grid = Grid::new(71, 71);
+    for position in parse_input(input).take(1024) {
+        grid.insert(position, '#');
+    }
+
+    format!("{}", find_path(&grid).unwrap())
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    let mut grid = Grid::new(71, 71);
+    for position in parse_input(input) {
+        grid.insert(position, '#');
+        if find_path(&grid).is_none() {
+            return format!("{},{}", position[0], position[1]);
+        }
+    }
+    panic!();
 }

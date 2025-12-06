@@ -1,6 +1,9 @@
-use std::collections::{
-    HashMap,
-    HashSet,
+use std::{
+    collections::{
+        HashMap,
+        HashSet,
+    },
+    io::BufRead,
 };
 
 use aoc_tools;
@@ -8,11 +11,11 @@ use aoc_tools;
 type Grid = aoc_tools::BoundedSparseGrid<char>;
 type Vector = aoc_tools::Vector<i32, 2>;
 
-pub fn solve<I>(factors: I) -> usize
+pub fn solve<I>(mut input: Box<dyn BufRead>, factors: I) -> usize
 where
     I: Iterator<Item=i32> + Clone,
 {
-    let grid = Grid::from_stdin('.');
+    let grid = Grid::from_buf_read(&mut input, '.');
 
     let mut antennas: HashMap<char, Vec<Vector>> = HashMap::new();
     let mut antinodes = HashSet::new();
@@ -40,4 +43,12 @@ where
     }
 
     return antinodes.len();
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 1..2))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 0..))
 }

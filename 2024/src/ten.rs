@@ -1,4 +1,7 @@
-use std::collections::HashSet;
+use std::{
+    collections::HashSet,
+    io::BufRead,
+};
 
 use aoc_tools;
 
@@ -39,8 +42,8 @@ impl TrailAccumulator for usize {
     }
 }
 
-pub fn solve<T: TrailAccumulator>() -> usize {
-    let grid = Grid::from_stdin().unwrap();
+pub fn solve<T: TrailAccumulator>(mut input: Box<dyn BufRead>) -> usize {
+    let grid = Grid::from_buf_read(&mut input).unwrap();
 
     return grid.indices().filter_map(|start_pos| {
         if grid[start_pos] != 0 {
@@ -63,4 +66,14 @@ pub fn solve<T: TrailAccumulator>() -> usize {
         }
         Some(tails.len())
     }).sum::<usize>();
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    let result = solve::<HashSet<Vector>>(input);
+    format!("{result}")
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    let result = solve::<usize>(input);
+    format!("{result}")
 }

@@ -1,4 +1,4 @@
-use std::io;
+use std::io::BufRead;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Operator {
@@ -100,11 +100,19 @@ fn find_operators(left: u64, right: &[u64], operators: &[Operator]) -> bool {
     }
 }
 
-pub fn solve(operators: &[Operator]) -> u64 {
-    return io::stdin().lines()
+pub fn solve(input: Box<dyn BufRead>, operators: &[Operator]) -> u64 {
+    return input.lines()
         .filter_map(|line| {
             let (left, right) = parse_line(line.as_ref().unwrap());
             find_operators(left, &right[..], operators).then_some(left)
         })
         .sum::<u64>();
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, &[Operator::Add, Operator::Multiply]))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, &[Operator::Add, Operator::Multiply, Operator::Concatenate]))
 }

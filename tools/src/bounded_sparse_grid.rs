@@ -1,6 +1,10 @@
 use std::{
     collections::HashMap,
-    io,
+    io:: {
+        self,
+        BufRead,
+    },
+    ops::Deref,
 };
 
 type Vector =  crate::vector::Vector<i32, 2>;
@@ -58,8 +62,12 @@ impl<T> BoundedSparseGrid<T> {
 }
 
 impl BoundedSparseGrid<char> {
-    pub fn from_stdin(empty: char) -> Self {
-        let mut lines = io::stdin().lines().map(Result::unwrap).peekable();
+    pub fn from_lines<L, I>(lines: L, empty: char) -> Self
+    where
+        L: Iterator<Item=I>,
+        I: Deref<Target=str>,
+    {
+        let mut lines = lines.peekable();
         let width = lines.peek().unwrap().len();
         let mut height = 0;
         let mut elements = HashMap::new();
@@ -77,5 +85,16 @@ impl BoundedSparseGrid<char> {
             width,
             height,
         }
+    }
+
+    pub fn from_buf_read<B>(buf_read: &mut B, empty: char) -> Self
+    where
+        B: BufRead,
+    {
+        Self::from_lines(buf_read.lines().map(Result::unwrap), empty)
+    }
+
+    pub fn from_stdin(empty: char) -> Self {
+        Self::from_lines(io::stdin().lines().map(Result::unwrap), empty)
     }
 }

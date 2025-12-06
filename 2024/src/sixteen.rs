@@ -1,10 +1,12 @@
 use std::{
+    cmp::Ordering,
     collections::{
         BinaryHeap,
         HashMap,
+        HashSet,
         hash_map::Entry,
     },
-    cmp::Ordering,
+    io::BufRead,
 };
 
 use aoc_tools;
@@ -75,8 +77,8 @@ fn add_node(
     }
 }
 
-pub fn compute_parents() -> (HashMap<Node, (usize, Vec<Node>)>, Node) {
-    let grid = Grid::from_stdin().unwrap();
+pub fn compute_parents(mut input: Box<dyn BufRead>) -> (HashMap<Node, (usize, Vec<Node>)>, Node) {
+    let grid = Grid::from_buf_read(&mut input).unwrap();
 
     let start = grid.find(&'S').unwrap();
 
@@ -108,4 +110,29 @@ pub fn compute_parents() -> (HashMap<Node, (usize, Vec<Node>)>, Node) {
     }
 
     (parents, finish_node.unwrap())
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    let (parents, finish_node) = compute_parents(input);
+    let result = parents.get(&finish_node).unwrap().0;
+    format!("{}", result)
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    let (parents, finish_node) = compute_parents(input);
+
+    let mut fringe = vec![finish_node];
+    let mut visited = HashSet::from([finish_node]);
+
+    while let Some(node) = fringe.pop() {
+        for parent in parents.get(&node).unwrap().1.iter() {
+            if !visited.contains(parent) {
+                visited.insert(*parent);
+                fringe.push(*parent);
+            }
+        }
+    }
+
+    let result = visited.iter().map(|node| node.position).collect::<HashSet<_>>().len();
+    format!("{}", result)
 }

@@ -1,9 +1,6 @@
 use std::{
 	collections::HashMap,
-	io::{
-		self,
-		Read,
-	},
+    io::BufRead,
 	str::FromStr,
 };
 
@@ -75,11 +72,11 @@ pub fn get_numbered_cable(v: char, i: usize) -> String {
 	format!("{}{:02}", v, i)
 }
 
-pub fn parse_input() -> (HashMap<String, bool>, HashMap<String, Operation>) {
+pub fn parse_input(mut input: Box<dyn BufRead>) -> (HashMap<String, bool>, HashMap<String, Operation>) {
 	let input_regex = Regex::new(r"([[:alnum:]]{3}): (0|1)").unwrap();
 	let gate_regex = Regex::new(r"([[:alnum:]]{3}) (AND|OR|XOR) ([[:alnum:]]{3}) -> ([[:alnum:]]{3})").unwrap();
 	let mut s = String::new();
-	io::stdin().read_to_string(&mut s).unwrap();
+	input.read_to_string(&mut s).unwrap();
 	let [inputs_string, gates_string] = s.split("\n\n").collect::<Vec<_>>().try_into().unwrap();
 	let values = inputs_string.lines().map(|line| {
 		let [input, value_string] = input_regex.captures(line).unwrap().extract().1;
@@ -91,4 +88,24 @@ pub fn parse_input() -> (HashMap<String, bool>, HashMap<String, Operation>) {
 	}).collect();
 
 	(values, gates)
+}
+
+fn get_value(cable: &str, values: &HashMap<String, bool>, gates: &HashMap<String, Operation>) -> Option<bool> {
+	values.get(cable).copied().or_else(||
+		gates.get(cable).and_then(|operation|
+			get_value(operation.operands()[0], values, gates)
+				.zip(get_value(operation.operands()[1], values, gates))
+				.map(|(value_1, value_2)| operation.operator().apply(value_1, value_2))
+		)
+	)
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+	let (values, gates) = parse_input(input);
+
+	let result = (0..)
+		.map_while(|i| get_value(&get_numbered_cable('z', i), &values, &gates).map(|value| (value as usize) << i))
+		.sum::<usize>();
+
+	format!("{}", result)
 }

@@ -1,9 +1,6 @@
 use std::{
     collections::HashMap,
-    io::{
-        self,
-        Read,
-    },
+    io::BufRead,
 };
 
 fn count_children(number: u64, num_blinks: usize, cache: &mut HashMap<(u64, usize), usize>) -> usize {
@@ -39,13 +36,21 @@ fn count_children(number: u64, num_blinks: usize, cache: &mut HashMap<(u64, usiz
     return num_children;
 }
 
-pub fn solve(num_blinks: usize) -> usize {
+pub fn solve(mut input: Box<dyn BufRead>, num_blinks: usize) -> usize {
     let mut s = String::new();
     let mut cache = HashMap::new();
-    io::stdin().read_to_string(&mut s).unwrap();
+    input.read_to_string(&mut s).unwrap();
     s.split_whitespace()
         .map(str::parse)
         .map(Result::unwrap)
         .map(|number| count_children(number, num_blinks, &mut cache))
         .sum()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 25))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 75))
 }

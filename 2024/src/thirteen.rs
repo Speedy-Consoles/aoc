@@ -1,8 +1,5 @@
 use std::{
-    io::{
-        self,
-        Read,
-    },
+    io::BufRead,
     mem,
 };
 
@@ -118,13 +115,13 @@ fn compute_button_presses(mut ax: i64, mut ay: i64, mut bx: i64, mut by: i64, mu
     Some((px / ax, py / by))
 }
 
-pub fn solve(offset: i64) -> i64 {
+pub fn solve(mut input: Box<dyn BufRead>, offset: i64) -> i64 {
     let regex = Regex::new(
         r"^Button A: X\+(\d+), Y\+(\d+)\nButton B: X\+(\d+), Y\+(\d+)\nPrize: X=(\d+), Y=(\d+)$"
     ).unwrap();
 
     let mut s = String::new();
-    io::stdin().read_to_string(&mut s).unwrap();
+    input.read_to_string(&mut s).unwrap();
     s.trim().split("\n\n").filter_map(|block| {
         let [ax, ay, bx, by, px, py] = regex.captures(&block)
             .unwrap()
@@ -135,4 +132,12 @@ pub fn solve(offset: i64) -> i64 {
 
         compute_button_presses(ax, ay, bx, by, px + offset, py + offset).map(|(u, v)| u * 3 + v)
     }).sum::<i64>()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 0))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 10000000000000))
 }

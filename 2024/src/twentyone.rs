@@ -1,7 +1,7 @@
 use std::{
     sync::LazyLock,
     collections::HashMap,
-    io,
+    io::BufRead,
     iter,
     ptr,
 };
@@ -117,9 +117,9 @@ fn get_min_num_key_presses(
     num_key_presses
 }
 
-pub fn solve(num_robots: usize) -> usize {
+pub fn solve(input: Box<dyn BufRead>, num_robots: usize) -> usize {
     let mut caches = iter::repeat_with(|| HashMap::new()).take(num_robots).collect::<Vec<_>>();
-    io::stdin().lines().map(Result::unwrap).map(|line| {
+    input.lines().map(Result::unwrap).map(|line| {
         let mut iter = line.chars();
         iter.next_back();
         let code: Vec<_> = iter.map(|c| c.to_digit(10).unwrap() as usize).collect();
@@ -132,4 +132,12 @@ pub fn solve(num_robots: usize) -> usize {
         num_key_presses * factor
     })
     .sum::<usize>()
+}
+
+pub fn part_1(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 3))
+}
+
+pub fn part_2(input: Box<dyn BufRead>) -> String {
+    format!("{}", solve(input, 26))
 }
