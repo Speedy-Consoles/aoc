@@ -1,15 +1,18 @@
-use std::ops::{
-    Add,
-    AddAssign,
-    Div,
-    DivAssign,
-    Index,
-    IndexMut,
-    Mul,
-    MulAssign,
-    Neg,
-    Sub,
-    SubAssign,
+use std::{
+    convert::From,
+    ops::{
+        Add,
+        AddAssign,
+        Div,
+        DivAssign,
+        Index,
+        IndexMut,
+        Mul,
+        MulAssign,
+        Neg,
+        Sub,
+        SubAssign,
+    },
 };
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -18,6 +21,18 @@ pub struct Vector<T, const N: usize>([T; N]);
 impl<T: Ord + Default, const N: usize> Vector<T, N> {
     pub fn in_bounds(&self, size: &Vector<T, N>) -> bool {
         self.0.iter().zip(size.0.iter()).all(|(v, l)| v >= &T::default() && v < l)
+    }
+}
+
+impl<const N: usize> Vector<f32, N> {
+    pub fn norm(&self) -> f32 {
+        self.0.iter().map(|v| v * v).sum::<f32>().sqrt()
+    }
+}
+
+impl<const N: usize> Vector<f64, N> {
+    pub fn norm(&self) -> f64 {
+        self.0.iter().map(|v| v * v).sum::<f64>().sqrt()
     }
 }
 
@@ -75,6 +90,12 @@ impl Vector<i32, 3> {
         Self::new( 0, -1,  0),
         Self::new( 0,  0, -1),
     ];
+}
+
+impl<T, const N: usize> From<[T; N]> for Vector<T, N> {
+    fn from(array: [T; N]) -> Self {
+        Vector(array)
+    }
 }
 
 impl<T, const N: usize> Index<usize> for Vector<T, N> {
