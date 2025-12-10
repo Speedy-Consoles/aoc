@@ -1,4 +1,5 @@
 use std::{
+    array,
     convert::From,
     ops::{
         Add,
@@ -35,6 +36,27 @@ impl<const N: usize> Vector<f64, N> {
         self.0.iter().map(|v| v * v).sum::<f64>().sqrt()
     }
 }
+
+macro_rules! impl_abs_diff {
+    ($t:ty, $ut:ty) => {
+        impl<const N: usize> Vector<$t, N>{
+            pub fn abs_diff(&self, other: &Self) -> Vector<$ut, N> {
+                Vector(array::from_fn(|i| self.0[i].abs_diff(other.0[i])))
+            }
+        }
+    }
+}
+
+impl_abs_diff!(i8, u8);
+impl_abs_diff!(i16, u16);
+impl_abs_diff!(i32, u32);
+impl_abs_diff!(i64, u64);
+impl_abs_diff!(isize, usize);
+impl_abs_diff!(u8, u8);
+impl_abs_diff!(u16, u16);
+impl_abs_diff!(u32, u32);
+impl_abs_diff!(u64, u64);
+impl_abs_diff!(usize, usize);
 
 impl<T> Vector<T, 2> {
     pub const fn new(x: T, y: T) -> Self {
