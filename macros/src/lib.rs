@@ -137,8 +137,8 @@ mod tests {
     #[test]
     fn check_{day_id}{part_id}() {{
         let input = Box::new(BufReader::new(File::open(format!(\"{day_id}_input.txt\")).unwrap()));
-        let actual_solution = crate::{module_name}::{function_name}(input);
         let nominal_solution = NOMINAL_SOLUTIONS.get(\"{day_id}{part_id}\").unwrap();
+        let actual_solution = crate::{module_name}::{function_name}(input);
         assert_eq!(actual_solution, *nominal_solution);
     }}
 ");
