@@ -126,6 +126,32 @@ impl<T> Grid<T> {
 
 impl<T> Grid<T>
 where
+    T: Copy,
+{
+    pub fn from(width: usize, height: usize, value: T) -> Self {
+        Self {
+            width,
+            height,
+            cells: iter::repeat_n(value, width * height).collect(),
+        }
+    }
+}
+
+impl<T> Grid<T>
+where
+    T: Default,
+{
+    pub fn from_default(width: usize, height: usize) -> Self {
+        Self {
+            width,
+            height,
+            cells: iter::repeat_with(T::default).take(width * height).collect(),
+        }
+    }
+}
+
+impl<T> Grid<T>
+where
     T: Eq,
 {
     pub fn find(&self, value: &T) -> Option<Vector> {

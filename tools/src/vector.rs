@@ -16,7 +16,7 @@ use std::{
     },
 };
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Vector<T, const N: usize>([T; N]);
 
 impl<T: Ord + Default, const N: usize> Vector<T, N> {
